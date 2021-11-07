@@ -24,5 +24,5 @@
 ## **猜数字游戏** 实现方式
 
 本项目将暂时由以下两种实现方式构建：
-* 由Java语言实现功能，配合`Android`界面
+* 由Java语言实现功能，配合`Android`界面（在Android分支下）
 * `html5、css3`语言实现界面，`JavaScript`脚本实现功能
