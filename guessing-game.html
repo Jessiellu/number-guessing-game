@@ -43,8 +43,94 @@
 
     <script>
 
-      // 开始编写 JavaScript 代码
+      let randomNumber = Math.floor(Math.random() * 100) + 1;//使用let创建变量,随机在100内产生一个数
 
+      //const 创建常量保存对界面元素的引用，界面元素的文字可能会改变，但引用是不变的
+      const guesses = document.querySelector('.guesses');
+      const lastResult = document.querySelector('.lastResult');
+      const lowOrHi = document.querySelector('.lowOrHi');
+
+      /*
+      querySelector()方法 仅仅返回文档中匹配指定CSS选择器的第一个元素。
+      如果你需要返回所有的元素，请使用querySelectorAll()方法替代。
+      */
+
+      //这两个常量存储对表单文本输入和提交按钮的引用，用于控制以后提交猜测
+      const guessSubmit = document.querySelector('.guessSubmit');
+      const guessField = document.querySelector('.guessField');
+
+      let guessCount = 1;//定义一个变量存储一个计数器并初始化为1（用于跟踪玩家猜测次数）
+      let resetButton;//定义一个变量存储对重置按钮的引用
+
+      function checkGuess(){
+        let userGuess = Number(guessField.value);//声明一个变量，并将其设置为文本字段中输入的值
+        //判断玩家是否第一次猜数字
+        if (guessCount === 1) { //=== 严格等于
+          guesses.textContent = '上次猜的数：';
+        }
+        guesses.textContent += userGuess + ' ';//每个上次猜的数结尾加个空格
+
+        if (userGuess === randomNumber) {//检测玩家猜测的数是否等于上面随机产生的数
+          lastResult.textContent = '恭喜你！猜对了！';
+          lastResult.style.backgroundColor = 'green';//绿色高亮
+          lowOrHi.textContent = '';
+          setGameOver();//调用方法
+        } else if (guessCount === 10) {//检查这个回合是否最后一个回合（即设置最多回合数是10）
+          lastResult.textContent = '!!!GAME OVER!!!';
+          setGameOver();//调用方法
+        } else {
+          lastResult.textContent = '你猜错了！';
+          lastResult.style.backgroundColor = 'red';//红色高亮
+          //判断并告诉玩家猜测的数字是高了还是低了
+          if (userGuess < randomNumber) {
+            lowOrHi.textContent = '你猜低了！';
+          } else if (userGuess > randomNumber) {
+            lowOrHi.textContent = '你猜高了！';
+          }
+        }
+
+        guessCount++;//次数加1，使玩家消耗一次机会
+        guessField.value = '';//表单中文本框的输入值清空
+        guessSubmit.focus();//重新聚焦于此，准备下一轮游戏
+      }
+
+      //为guessSubmit按钮添加一个事件监听器
+      guessSubmit.addEventListener('click', checkGuess);//.addEventListener()中作为参数的函数名不加括号
+
+      function setGameOver() {
+        guessField.disabled = true;//禁用表单文本输入
+        guessSubmit.disabled = true;//禁用按钮
+        //创建一个新的<button>元素
+        resetButton = document.createElement('button');//createElement() 方法通过指定名称创建一个元素
+        resetButton.textContent = '开始游戏';//设置它的文本
+        //把按钮添加到body后面
+        document.body.appendChild(resetButton);//appendChild() 方法向节点添加最后一个子节点。
+        resetButton.addEventListener('click', resetGame);//在新按钮上设置一个事件监听器，当它点击时，resetGame()函数将被调用
+      }
+
+      //重置游戏
+      function resetGame() {
+        guessCount = 1;//将回合数重置为1
+        //清空所有段落
+        const resetParas = document.querySelectorAll('.resultParas p');
+        //通过循环迭代，删除每个段落的文本内容
+        for (let i = 0; i < resetParas.length; i++) {
+          resetParas[i].textContent = '';
+        }
+
+        resetButton.parentNode.removeChild(resetButton);//删除重置按钮
+
+        //启用表单文本框元素
+        guessField.disabled = false;
+        guessSubmit.disabled = false;
+        guessField.value = '';//清空文本域
+        guessField.focus();//聚焦于此
+
+        lastResult.style.backgroundColor = 'white';//清空高亮
+
+        //重新生成一个新的随机数，这样就可以猜测新的数字了！
+        randomNumber = Math.floor(Math.random() * 100) + 1;
+      }
     </script>
   </body>
 </html>
